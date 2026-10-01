@@ -66,7 +66,7 @@ def build_shortcut(dry):
         return
     shell = {"WFWorkflowActionIdentifier": "is.workflow.actions.runshellscript",
              "WFWorkflowActionParameters": {
-                 "UUID": str(uuid.uuid4()).upper(), "Shell": "zsh", "InputMode": "as arguments",
+                 "UUID": str(uuid.uuid4()).upper(), "Shell": "/bin/zsh", "InputMode": "as arguments",
                  "Script": '"$HOME/.ai-context/save-clip.sh" "$@"',
                  "Input": {"Value": {"Type": "ExtensionInput"},
                            "WFSerializationType": "WFTextTokenAttachment"}}}
