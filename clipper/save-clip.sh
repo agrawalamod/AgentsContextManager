@@ -19,6 +19,7 @@ case $app in
     page=$(osascript -e 'tell application "Safari" to return (name of front document) & " <" & (URL of front document) & ">"') ;;
 esac
 
+nl=$'\n'  # $'\n' is literal inside a double-quoted ${//} replacement, so use a var
 clip="## $(date '+%Y-%m-%d %H:%M') · ${app:-unknown app}${page:+ · $page}"
 images=()
 for item in "$@"; do
@@ -26,9 +27,9 @@ for item in "$@"; do
     name="$(date +%Y%m%d-%H%M%S)-${item:t}"
     cp "$item" "$dir/assets/$name"
     images+=("$dir/assets/$name")
-    clip+=$'\n'"Image: ~/.ai-context/assets/$name"
+    clip+="$nl""Image: ~/.ai-context/assets/$name"
   else
-    clip+=$'\n'"> ${item//$'\n'/$'\n'> }"
+    clip+="$nl""> ${item//$nl/$nl> }"  # quote each line of the clip
   fi
 done
 
