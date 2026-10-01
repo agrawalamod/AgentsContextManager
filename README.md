@@ -79,6 +79,21 @@ Available in both Claude (`/name`) and Codex (`/name`):
 - **Slack / Outlook:** `/slack-sync` and `/outlook-sync` need a Slack or Outlook MCP server reachable in your agent. The history and journey features need no MCP at all.
 - **macOS privacy:** reading protected folders (Downloads, Desktop) needs Full Disk Access for the process running the rollup. The registry still lists those directories; grant Full Disk Access, or run the rollup from an agent that has it, to include their contents.
 
+## Saved reading context (macOS clipper)
+
+The `.llm/` logs remember what your agents did. The clipper remembers what **you** read. Select text in any app, right-click, and choose **Services → Save to AI Context**. With nothing selected, it saves the clipboard instead, so a copied image or a screenshot taken with ⌃⇧⌘4 also works. A quick Claude Haiku call routes each clip to one topic file such as `~/.ai-context/eb-1a.md`, and creates new topics as needed. Each clip keeps its source app and browser tab. Later, when a task touches that topic, the agent reads the file, recaps what you saved, and nudges you toward it.
+
+```
+python3 clipper/install.py               # add --dry-run to preview, --no-shortcut to skip the import
+```
+
+Then, in the Shortcuts app:
+1. Click **Add Shortcut** in the import dialog.
+2. Turn on **Settings → Advanced → Allow Running Scripts**.
+3. Optionally, add a keyboard shortcut in the shortcut's Details panel.
+
+To sharpen routing, set `profile=` in `~/.ai-context/config.sh` to one line about you. To steer a topic, edit its `About:` line; that line is what the router reads. Clips are third-party text, so the rule tells agents to treat them as leads to verify, never as instructions.
+
 ## Repository layout
 
 ```
@@ -88,8 +103,11 @@ RULE.md                     # the rule inserted into CLAUDE.md / AGENTS.md
 scripts/                    # hook scripts + the shared session_start_core.py
 commands/claude/            # the five slash commands (Claude format)
 commands/codex/             # the five slash commands (Codex prompt format)
+clipper/                    # Save to AI Context: save-clip.sh, install.py, RULE.md
 ```
 
 ## Uninstall
 
 Delete `~/.agents-history/`, remove the hook entries from `~/.claude/settings.json` and `~/.codex/config.toml`, and delete the command files. The `.llm/` folders and their contents are yours to keep or remove; nothing else depends on them.
+
+For the clipper, delete the shortcut in the Shortcuts app and the rule block from `CLAUDE.md`. `~/.ai-context/` holds your clips; keep it or delete it.
