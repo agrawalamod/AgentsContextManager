@@ -17,7 +17,10 @@ DENY_PREFIXES = ("/tmp", "/private", "/var", "/usr", "/etc", "/opt", "/bin", "/s
 
 
 def under_home(p):
-    return p == HOME or p.startswith(HOME + os.sep)
+    # Resolve symlinks so a symlinked HOME (e.g. /home/x -> /local/home/x on Linux dev
+    # hosts) still matches real project paths under it.
+    rh, rp = os.path.realpath(HOME), os.path.realpath(p)
+    return rp == rh or rp.startswith(rh + os.sep)
 
 
 def blocked(p):
@@ -53,7 +56,7 @@ def emit(path, header, note, n):
 
 def main():
     cwd = sys.argv[1] if len(sys.argv) > 1 and sys.argv[1] else os.getcwd()
-    cwd = os.path.abspath(cwd)
+    cwd = os.path.realpath(os.path.abspath(cwd))  # canonicalize symlinks for consistent .llm + registry
     if not under_home(cwd) or blocked(cwd):
         return
     llm = os.path.join(cwd, ".llm")

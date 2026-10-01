@@ -41,7 +41,7 @@ def main():
 
     if ev.get("reason") == "clear":            # do not log on /clear
         return
-    cwd = ev.get("cwd") or os.getcwd()
+    cwd = os.path.realpath(ev.get("cwd") or os.getcwd())  # canonicalize symlinks
     hist = os.path.join(cwd, ".llm", "AGENTS_HISTORY.md")
     if not os.path.isfile(hist):               # tracked dirs have .llm/AGENTS_HISTORY.md
         return
