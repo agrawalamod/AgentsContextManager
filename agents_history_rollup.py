@@ -96,7 +96,7 @@ def describe(dirpath):
         js = journey_summary(j)
         if js:
             info["overview"] = js  # prefer the curated narrative's lead
-    info["dir"] = os.path.abspath(dirpath)
+    info["dir"] = os.path.realpath(dirpath)
     return info
 
 
@@ -111,13 +111,13 @@ def registry_dirs():
 
 
 def find_logs(root, out_path, max_depth):
-    root = os.path.abspath(root)
-    out_abs = os.path.abspath(out_path)
+    root = os.path.realpath(root)
+    out_abs = os.path.realpath(out_path)
     seen = {}
 
     def add(dirpath):
-        key = os.path.abspath(dirpath)
-        if key in seen or os.path.abspath(os.path.join(dirpath, LEAF_REL)) == out_abs:
+        key = os.path.realpath(dirpath)
+        if key in seen or os.path.realpath(os.path.join(dirpath, LEAF_REL)) == out_abs:
             return
         info = describe(dirpath)
         if info:
@@ -135,7 +135,7 @@ def find_logs(root, out_path, max_depth):
 
 
 def render(root, logs):
-    root = os.path.abspath(root)
+    root = os.path.realpath(root)
     logs = sorted(logs, key=lambda x: x["last_date"], reverse=True)
     now = time.strftime("%Y-%m-%d %H:%M")
     out = [
@@ -170,8 +170,8 @@ def main():
     ap.add_argument("--out", default=None)
     ap.add_argument("--max-depth", type=int, default=8)
     args = ap.parse_args()
-    root = os.path.abspath(os.path.expanduser(args.root))
-    out_path = os.path.abspath(os.path.expanduser(
+    root = os.path.realpath(os.path.expanduser(args.root))
+    out_path = os.path.realpath(os.path.expanduser(
         args.out or os.path.join(root, ".llm", GLOBAL_NAME)))
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     logs = find_logs(root, out_path, args.max_depth)
