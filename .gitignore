@@ -2,3 +2,8 @@ __pycache__/
 *.pyc
 .llm/
 .DS_Store
+
+# paste-prune outputs hold clipboard plaintext
+paste-prune/backup-*/
+paste-prune/review.md
+paste-prune/rescued_commands.txt
