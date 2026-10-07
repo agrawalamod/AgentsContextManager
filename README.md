@@ -94,6 +94,18 @@ Then, in the Shortcuts app:
 
 To sharpen routing, set `profile=` in `~/.ai-context/config.sh` to one line about you. To steer a topic, edit its `About:` line; that line is what the router reads. Clips are third-party text, so the rule tells agents to treat them as leads to verify, never as instructions.
 
+## Paste clipboard pruner (macOS)
+
+If you keep [Paste](https://pasteapp.io) history forever, its local store grows without limit. Paste gets slower, and every password and token you ever copied sits there in plaintext. `paste-prune/paste_prune.py` cuts the history down to what you reuse: shell commands and links. It deletes images, page captures, prose and dictation, terminal output, credentials, and older duplicate copies. It never touches items in pinned lists. The classifier is local and rule-based, so no clipboard text leaves your machine. On one Mac it took Paste from 3.1 GB and 26,369 items to 31 MB and 4,393 items.
+
+```
+python3 paste-prune/paste_prune.py report    # read-only: category table, projected sizes, review.md
+python3 paste-prune/paste_prune.py apply     # quit Paste first
+python3 paste-prune/paste_prune.py verify    # integrity and orphan checks
+```
+
+`apply` backs up both databases and moves the deleted blobs into `paste-prune/backup-<timestamp>/`, so you can restore everything. You get the disk space back when you delete that folder. It also saves command lines that existed only inside deleted terminal output to `rescued_commands.txt`. The review file, the rescue file, and the backups hold clipboard plaintext, and `.gitignore` keeps them out of the repo. Paste's Core Data schema is undocumented, so read the `report` output before you apply after a Paste update.
+
 ## Repository layout
 
 ```
@@ -104,6 +116,7 @@ scripts/                    # hook scripts + the shared session_start_core.py
 commands/claude/            # the five slash commands (Claude format)
 commands/codex/             # the five slash commands (Codex prompt format)
 clipper/                    # Save to AI Context: save-clip.sh, install.py, RULE.md
+paste-prune/                # Paste clipboard pruner: paste_prune.py
 ```
 
 ## Uninstall
